@@ -1,8 +1,8 @@
 import pygame
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, CLOUD
+from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, FONT_ARIAL, CLOUD
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacles_manager import ObstacleManager 
-
+from dino_runner.components.player_hearts.heart_manager import HeartManager
 class Game:
     def __init__(self):
         pygame.init()
@@ -16,7 +16,14 @@ class Game:
         self.y_pos_bg = 380
         self.player = Dinosaur()
         self.obstacle_manager = ObstacleManager()
+        self.heart_manager = HeartManager()
+        self.points = 0
 
+    def increase_score(self):
+        self.points += 1
+        if self.points % 100 == 0:
+            self.game_speed += 1
+        
     def run(self):
         # Game loop: events - update - draw
         self.playing = True
@@ -35,6 +42,7 @@ class Game:
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.obstacle_manager.update(self.game_speed, self)
+        self.increase_score()
 
     def draw(self):
         self.clock.tick(FPS)
@@ -42,6 +50,8 @@ class Game:
         self.draw_background()
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
+        self.heart_manager.draw(self.screen)
+        self.draw_score()
         pygame.display.update()
         pygame.display.flip()
 
@@ -53,4 +63,11 @@ class Game:
             self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
+
+    def draw_score(self):
+        font = pygame.font.Font(FONT_ARIAL, 30)
+        surface = font.render("points:" + str(self.points), True, (0,0,0))
+        rect = surface.get_rect()
+        rect.center = (1000,40)
+        self.screen.blit(surface, rect)
         
