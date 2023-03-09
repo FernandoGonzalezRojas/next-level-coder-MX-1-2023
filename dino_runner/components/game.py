@@ -1,8 +1,10 @@
 import pygame
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, FONT_ARIAL, CLOUD
+import random
+from dino_runner.utils.constants import (BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, FONT_ARIAL, CLOUD)
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacles_manager import ObstacleManager 
 from dino_runner.components.player_hearts.heart_manager import HeartManager
+from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 class Game:
     def __init__(self):
         pygame.init()
@@ -14,15 +16,20 @@ class Game:
         self.game_speed = 15
         self.x_pos_bg = 0
         self.y_pos_bg = 380
+        self.x_cloud = SCREEN_WIDTH
+        self.y_cloud = random.randint(100,150)
         self.player = Dinosaur()
         self.obstacle_manager = ObstacleManager()
         self.heart_manager = HeartManager()
+        self.power_up_manager = PowerUpManager()
+        self.alter_color = 500
         self.points = 0
 
     def increase_score(self):
         self.points += 1
-        if self.points % 100 == 0:
+        if self.points % 200 == 0:
             self.game_speed += 1
+        self.player.check_invincibility()
         
     def run(self):
         # Game loop: events - update - draw
@@ -42,15 +49,18 @@ class Game:
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.obstacle_manager.update(self.game_speed, self)
+        self.power_up_manager.update(self.points, self.game_speed, self.player)
         self.increase_score()
 
     def draw(self):
         self.clock.tick(FPS)
-        self.screen.fill((255, 255, 255))
+        self.screen.fill((255,255,255))
         self.draw_background()
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
         self.heart_manager.draw(self.screen)
+        self.power_up_manager.draw(self.screen)
+        self.draw_cloud()
         self.draw_score()
         pygame.display.update()
         pygame.display.flip()
@@ -70,4 +80,12 @@ class Game:
         rect = surface.get_rect()
         rect.center = (1000,40)
         self.screen.blit(surface, rect)
-        
+
+    def draw_cloud(self):
+        cloud_speed = 1
+        image_width = CLOUD.get_width()
+        self.screen.blit(CLOUD,(self.x_cloud, self.y_cloud))
+        if self.x_cloud < -image_width:
+            self.x_cloud = SCREEN_WIDTH
+            self.y_cloud = random.randint(100,150)
+        self.x_cloud -= cloud_speed   
