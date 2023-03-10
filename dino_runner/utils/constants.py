@@ -2,9 +2,11 @@ import pygame
 import os
 
 # Global Constants
+pygame.mixer.init()
 TITLE = "Chrome Dino Runner"
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
+GAME_SPEED = 15
 FPS = 30
 IMG_DIR = os.path.join(os.path.dirname(__file__), "..", "assets")
 FONT_ARIAL = pygame.font.match_font('arial')
@@ -60,16 +62,21 @@ BIRD = [
     pygame.image.load(os.path.join(IMG_DIR, "Bird/Bird1.png")),
     pygame.image.load(os.path.join(IMG_DIR, "Bird/Bird2.png")),
 ]
-
 CLOUD = pygame.image.load(os.path.join(IMG_DIR, 'Other/Cloud.png'))
 SHIELD = pygame.image.load(os.path.join(IMG_DIR, 'Other/shield.png'))
 HAMMER = pygame.image.load(os.path.join(IMG_DIR, 'Other/hammer.png'))
-
+HEART_PLUS = pygame.image.load(os.path.join(IMG_DIR, 'Other/Heart.png'))
 BG = pygame.image.load(os.path.join(IMG_DIR, 'Other/Track.png'))
 
 HEART = pygame.image.load(os.path.join(IMG_DIR, 'Other/SmallHeart.png'))
-
+DINO_START = pygame.image.load(os.path.join(IMG_DIR, 'Dino/DinoStart.png'))
+RESET = pygame.image.load(os.path.join(IMG_DIR, 'Other/Reset.png'))
+SOUND_JUMP = pygame.mixer.Sound(os.path.join(IMG_DIR, 'audio/run.wav'))
+GAME_OVER = pygame.image.load(os.path.join(IMG_DIR, 'Other/GameOver.png'))
 DEFAULT_TYPE = "default"
 SHIELD_TYPE = "shield"
+HAMMER_TYPE = "hammer"
+HEART_TYPE = "heart"
+
 LIVES = 4
 CLOUDS = 4
